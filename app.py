@@ -3,9 +3,9 @@ from flask_cors import CORS
 import openai, os
 
 app = Flask(__name__)
-CORS(app)  # mobile app থেকে access করার জন্য CORS enable
+CORS(app)  # Mobile app থেকে access করার জন্য
 
-# OpenAI API key from environment
+# OpenAI API key from environment variable
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/")
@@ -16,6 +16,7 @@ def home():
 def ask():
     try:
         data = request.get_json()
+        print("Received data:", data)  # Debug log
         question = data.get("q", "")
         if not question:
             return jsonify({"answer": "No question provided"}), 400
@@ -34,9 +35,9 @@ def ask():
         return jsonify({"answer": answer})
 
     except Exception as e:
+        print("Error:", e)  # Debug log
         return jsonify({"answer": f"Server error: {str(e)}"}), 500
 
 if __name__ == "__main__":
-    # Render এর জন্য host=0.0.0.0 এবং port environment variable ব্যবহার
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
