@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import openai, os
+from openai import OpenAI
+import os
 
 app = Flask(__name__)
 CORS(app)  # Mobile app থেকে access করার জন্য
 
-# OpenAI API key from environment variable
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# OpenAI client তৈরি
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route("/")
 def home():
@@ -21,7 +22,8 @@ def ask():
         if not question:
             return jsonify({"answer": "No question provided"}), 400
 
-        completion = openai.ChatCompletion.create(
+        # OpenAI 1.0+ compatible call
+        completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "তুমি একজন কৃষি বিশেষজ্ঞ। সহজ ভাষায় কৃষি ও চাষাবাদ সম্পর্কিত পরামর্শ দাও।"},
@@ -31,7 +33,8 @@ def ask():
             max_tokens=300
         )
 
-        answer = completion.choices[0].message["content"].strip()
+        answer = completion.choices[0].message.content.strip()
+        print("Bot answer:", answer)  # Debug log
         return jsonify({"answer": answer})
 
     except Exception as e:
