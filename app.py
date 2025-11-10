@@ -20,9 +20,9 @@ def ask():
         if not question:
             return jsonify({"answer": "No question provided"}), 400
 
-        # 0.28 version compatible code
+        # OpenAI 0.28 compatible Completion API
         completion = openai.Completion.create(
-            engine="gpt-3.5-turbo",  # engine নাম 0.28 এ ChatCompletion নয়
+            engine="gpt-3.5-turbo",  # 0.28 version uses engine instead of model
             prompt=f"তুমি একজন কৃষি বিশেষজ্ঞ। সহজ ভাষায় কৃষি ও চাষাবাদ সম্পর্কিত পরামর্শ দাও।\nUser: {question}\nBot:",
             max_tokens=300,
             temperature=0.3
