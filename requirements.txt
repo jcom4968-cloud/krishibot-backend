@@ -1,4 +1,4 @@
 Flask==3.1.2
+flask-cors==1.2.0
 openai==2.7.1
 gunicorn==23.0.0
-flask-cors==4.0.0  # mobile app access করতে optional কিন্তু recommend
