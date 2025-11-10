@@ -4,9 +4,8 @@ from openai import OpenAI
 import os
 
 app = Flask(__name__)
-CORS(app)  # Mobile app থেকে access করার জন্য
+CORS(app)
 
-# OpenAI client তৈরি
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route("/")
@@ -17,12 +16,10 @@ def home():
 def ask():
     try:
         data = request.get_json()
-        print("Received data:", data)  # Debug log
         question = data.get("q", "")
         if not question:
             return jsonify({"answer": "No question provided"}), 400
 
-        # OpenAI 1.0+ compatible call
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -34,11 +31,9 @@ def ask():
         )
 
         answer = completion.choices[0].message.content.strip()
-        print("Bot answer:", answer)  # Debug log
         return jsonify({"answer": answer})
 
     except Exception as e:
-        print("Error:", e)  # Debug log
         return jsonify({"answer": f"Server error: {str(e)}"}), 500
 
 if __name__ == "__main__":
